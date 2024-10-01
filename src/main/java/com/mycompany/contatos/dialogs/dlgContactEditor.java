@@ -1,4 +1,11 @@
-package com.mycompany.contatos;
+package com.mycompany.contatos.dialogs;
+
+import com.mycompany.contatos.classes.Contact;
+
+/*
+    Contact editor dialog
+    Allows the user to create or edit a contact item
+*/
 
 public class dlgContactEditor extends javax.swing.JDialog {
 
@@ -18,7 +25,6 @@ public class dlgContactEditor extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         txtName = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        txtTelephone = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -26,6 +32,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         txtCategory = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        txtTelephone = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Editor de contato");
@@ -36,6 +43,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
         });
 
         btnOk.setText("OK");
+        btnOk.setToolTipText("Salvar alterações");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
@@ -43,6 +51,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
         });
 
         btnCancel.setText("Cancelar");
+        btnCancel.setToolTipText("Fechar sem salvar");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);
@@ -61,6 +70,12 @@ public class dlgContactEditor extends javax.swing.JDialog {
 
         jLabel5.setText("Categoria");
 
+        try {
+            txtTelephone.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("+## (##) ####-####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -75,11 +90,11 @@ public class dlgContactEditor extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtCategory)
-                    .addComponent(txtTelephone, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                     .addComponent(txtAddress, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtEmail)
-                    .addComponent(txtName))
+                    .addComponent(txtName)
+                    .addComponent(txtTelephone))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -91,8 +106,8 @@ public class dlgContactEditor extends javax.swing.JDialog {
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(txtTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -146,6 +161,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // closing the dialog is equal to pressing the 'cancel' button
         confirmed = false;
         dispose();
     }//GEN-LAST:event_formWindowClosing
@@ -170,6 +186,8 @@ public class dlgContactEditor extends javax.swing.JDialog {
 
     public Contact EditContact(Contact con) {
         // edit a contact
+        
+        // shows pre-existing contact information on the editor
         txtName.setText(con.getName());
         txtTelephone.setText(con.getTelephone());
         txtEmail.setText(con.getEmail());
@@ -217,6 +235,6 @@ public class dlgContactEditor extends javax.swing.JDialog {
     private javax.swing.JTextField txtCategory;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtName;
-    private javax.swing.JTextField txtTelephone;
+    private javax.swing.JFormattedTextField txtTelephone;
     // End of variables declaration//GEN-END:variables
 }

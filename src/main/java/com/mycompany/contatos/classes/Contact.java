@@ -1,4 +1,9 @@
-package com.mycompany.contatos;
+package com.mycompany.contatos.classes;
+
+/*
+    Contact class
+    use to store data from a contact
+*/
 
 public class Contact {
 
@@ -11,6 +16,7 @@ public class Contact {
     public Contact(){
         
     }
+    
     public Contact(String name, String telephone, String email, String address, String category){
         this.name = name;
         this.telephone = telephone;
