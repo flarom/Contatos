@@ -1,19 +1,23 @@
 package com.mycompany.contatos.dialogs;
 
 import com.mycompany.contatos.classes.Contact;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /*
     Contact editor dialog
     Allows the user to create or edit a contact item
-*/
-
+ */
 public class dlgContactEditor extends javax.swing.JDialog {
 
     private boolean confirmed = false;
+    private java.awt.Frame parent;
 
     public dlgContactEditor(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        parent = parent;
         initComponents();
+        getRootPane().setDefaultButton(btnOk);
     }
 
     @SuppressWarnings("unchecked")
@@ -26,16 +30,19 @@ public class dlgContactEditor extends javax.swing.JDialog {
         txtName = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtEmail = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtAddress = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtCategory = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtTelephone = new javax.swing.JFormattedTextField();
+        txtEmail = new javax.swing.JTextField();
+        btnAddCategory = new javax.swing.JButton();
+        txtCategory = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Editor de contato");
+        setTitle("Contato");
+        setLocationByPlatform(true);
+        setMaximumSize(new java.awt.Dimension(2147483647, 206));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -71,10 +78,20 @@ public class dlgContactEditor extends javax.swing.JDialog {
         jLabel5.setText("Categoria");
 
         try {
-            txtTelephone.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("+## (##) ####-####")));
+            txtTelephone.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("+## (##) #####-####")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+
+        btnAddCategory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/add.png"))); // NOI18N
+        btnAddCategory.setToolTipText("Criar nova");
+        btnAddCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddCategory.setFocusable(false);
+        btnAddCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddCategoryActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -89,12 +106,15 @@ public class dlgContactEditor extends javax.swing.JDialog {
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
                 .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                    .addComponent(txtAddress, javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtCategory, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAddCategory))
+                    .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtTelephone, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                     .addComponent(txtEmail)
-                    .addComponent(txtName)
-                    .addComponent(txtTelephone))
+                    .addComponent(txtAddress))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -110,17 +130,21 @@ public class dlgContactEditor extends javax.swing.JDialog {
                     .addComponent(txtTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txtCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(btnAddCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -128,7 +152,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(239, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnCancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnOk)
@@ -166,8 +190,31 @@ public class dlgContactEditor extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_formWindowClosing
 
-    public Contact CreateContact() {
+    private void btnAddCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCategoryActionPerformed
+        dlgCategoryEditor dlg = new dlgCategoryEditor(parent);
+        String newCategory = dlg.getCategory();
+
+        if (newCategory != null) {
+            DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) txtCategory.getModel();
+
+            if (model.getIndexOf(newCategory) == -1) {
+                model.addElement(newCategory);
+                txtCategory.setSelectedItem(newCategory);
+            } else {
+                JOptionPane.showMessageDialog(null, "Esta categoria já existe.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnAddCategoryActionPerformed
+
+    public Contact CreateContact(String[] categories) {
         // create a new contact from scratch
+        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) txtCategory.getModel();
+        model.removeAllElements();
+
+        for (String category : categories) {
+            model.addElement(category);
+        }
+
         setVisible(true);
 
         Contact con = new Contact();
@@ -177,22 +224,29 @@ public class dlgContactEditor extends javax.swing.JDialog {
             con.setTelephone(txtTelephone.getText());
             con.setEmail(txtEmail.getText());
             con.setAddress(txtAddress.getText());
-            con.setCategory(txtCategory.getText());
+            con.setCategory(txtCategory.getSelectedItem().toString());
             return con;
         }
 
-        return con;
+        return null;
     }
 
-    public Contact EditContact(Contact con) {
-        // edit a contact
-        
-        // shows pre-existing contact information on the editor
+    public Contact EditContact(Contact con, String[] categories) {
+        // edit a contct
+
         txtName.setText(con.getName());
         txtTelephone.setText(con.getTelephone());
         txtEmail.setText(con.getEmail());
         txtAddress.setText(con.getAddress());
-        txtCategory.setText(con.getCategory());
+
+        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) txtCategory.getModel();
+        model.removeAllElements();
+
+        for (String category : categories) {
+            model.addElement(category);
+        }
+
+        txtCategory.setSelectedItem(con.getCategory());
 
         setVisible(true);
 
@@ -201,7 +255,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
             con.setTelephone(txtTelephone.getText());
             con.setEmail(txtEmail.getText());
             con.setAddress(txtAddress.getText());
-            con.setCategory(txtCategory.getText());
+            con.setCategory(txtCategory.getSelectedItem().toString());
         }
 
         return con;
@@ -223,6 +277,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddCategory;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
     private javax.swing.JLabel jLabel1;
@@ -232,7 +287,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtAddress;
-    private javax.swing.JTextField txtCategory;
+    private javax.swing.JComboBox<String> txtCategory;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtName;
     private javax.swing.JFormattedTextField txtTelephone;

@@ -9,6 +9,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
@@ -93,6 +95,8 @@ public class frmMain extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Meus Contatos");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setIconImage((new javax.swing.ImageIcon(getClass().getResource("/icone.png"))).getImage());
+        setMinimumSize(new java.awt.Dimension(200, 200));
 
         tblContacts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -311,6 +315,7 @@ public class frmMain extends javax.swing.JFrame {
 
         jMenu3.setText("Ajuda");
 
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/about.png"))); // NOI18N
         jMenuItem5.setText("Sobre");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
@@ -347,13 +352,21 @@ public class frmMain extends javax.swing.JFrame {
     // Contact management
     //
     private void AddItem() {
-        // Create a new contact item
+        Set<String> uniqueCategories = new HashSet<>();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblContacts.getModel();
+        int rowCount = model.getRowCount();
+
+        for (int i = 0; i < rowCount; i++) {
+            String category = model.getValueAt(i, 4).toString();
+            uniqueCategories.add(category);
+        }
+
+        String[] categoriesArray = uniqueCategories.toArray(new String[0]);
+
         dlgContactEditor editor = new dlgContactEditor(this, true);
-        Contact con = editor.CreateContact();
+        Contact con = editor.CreateContact(categoriesArray);
 
         if (con != null) {
-            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblContacts.getModel();
-
             model.addRow(new Object[]{
                 con.getName(),
                 con.getTelephone(),
@@ -361,22 +374,45 @@ public class frmMain extends javax.swing.JFrame {
                 con.getAddress(),
                 con.getCategory()
             });
+
+            if (originalData == null) {
+                originalData = new String[model.getRowCount()][model.getColumnCount()];
+            } else {
+                String[][] newData = new String[model.getRowCount()][model.getColumnCount()];
+                System.arraycopy(originalData, 0, newData, 0, originalData.length);
+                originalData = newData;
+            }
+
+            int lastRow = model.getRowCount() - 1;
+            originalData[lastRow] = new String[]{
+                con.getName(),
+                con.getTelephone(),
+                con.getEmail(),
+                con.getAddress(),
+                con.getCategory()
+            };
         }
     }
 
     private void EditItem() {
-        // Edit the selected contact item
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblContacts.getModel();
-
         int selectedRow = tblContacts.getSelectedRow();
 
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(null, "Selecione um contato para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Selecione um contato para editar.", "Nada para editar", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        dlgContactEditor editor = new dlgContactEditor(this, true);
+        Set<String> uniqueCategories = new HashSet<>();
+        int rowCount = model.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            String category = model.getValueAt(i, 4).toString();
+            uniqueCategories.add(category);
+        }
 
+        String[] categoriesArray = uniqueCategories.toArray(new String[0]);
+
+        dlgContactEditor editor = new dlgContactEditor(this, true);
         Contact con = new Contact();
         con.setName(model.getValueAt(selectedRow, 0).toString());
         con.setTelephone(model.getValueAt(selectedRow, 1).toString());
@@ -384,7 +420,7 @@ public class frmMain extends javax.swing.JFrame {
         con.setAddress(model.getValueAt(selectedRow, 3).toString());
         con.setCategory(model.getValueAt(selectedRow, 4).toString());
 
-        con = editor.EditContact(con);
+        con = editor.EditContact(con, categoriesArray);
 
         if (con != null) {
             model.setValueAt(con.getName(), selectedRow, 0);
@@ -392,18 +428,25 @@ public class frmMain extends javax.swing.JFrame {
             model.setValueAt(con.getEmail(), selectedRow, 2);
             model.setValueAt(con.getAddress(), selectedRow, 3);
             model.setValueAt(con.getCategory(), selectedRow, 4);
+
+            originalData[selectedRow] = new String[]{
+                con.getName(),
+                con.getTelephone(),
+                con.getEmail(),
+                con.getAddress(),
+                con.getCategory()
+            };
         }
     }
 
     private void DeleteItem() {
-        // Delete the selected contact item
         int[] selectedRows = tblContacts.getSelectedRows();
 
         if (selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione um contato para remover.", "Nada para remover", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Ask for confiration, when the users has more than 1 item selected
         if (selectedRows.length > 1) {
             int confirmation = JOptionPane.showConfirmDialog(null,
                     "Você selecionou " + selectedRows.length + " itens. Deseja realmente deletá-los?",
@@ -419,7 +462,15 @@ public class frmMain extends javax.swing.JFrame {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblContacts.getModel();
 
         for (int i = selectedRows.length - 1; i >= 0; i--) {
-            model.removeRow(selectedRows[i]);
+            // Remover da originalData
+            int rowToRemove = selectedRows[i];
+            String[][] newData = new String[originalData.length - 1][originalData[0].length];
+
+            System.arraycopy(originalData, 0, newData, 0, rowToRemove);
+            System.arraycopy(originalData, rowToRemove + 1, newData, rowToRemove, originalData.length - rowToRemove - 1);
+            originalData = newData;
+
+            model.removeRow(rowToRemove);
         }
     }
 
@@ -427,7 +478,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void Filter() {
         restoreOriginalData();
-        dlgSearch dlg = new dlgSearch(this, true);
+        dlgSearch dlg = new dlgSearch(this);
         SearchQuerry querry = dlg.Search();
 
         if (querry == null) {
@@ -495,7 +546,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void copy() {
         // copy the selected cell to the clipboard
-        
+
         // get focused line and column
         int row = tblContacts.getSelectedRow();
         int col = tblContacts.getSelectedColumn();
@@ -708,6 +759,7 @@ public class frmMain extends javax.swing.JFrame {
         frmMain newFrame = new frmMain();
         newFrame.setVisible(true);
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

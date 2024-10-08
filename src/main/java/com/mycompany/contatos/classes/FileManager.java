@@ -71,7 +71,7 @@ public class FileManager {
     // open a file via dialog
     public String OpenFileDialog() {
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivos de contato", "ctt");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivos de contato (*.ctt)", "ctt");
         fileChooser.setFileFilter(filter);
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -84,7 +84,7 @@ public class FileManager {
     public String SaveFileDialog() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Salvar Contatos");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Arquivos de Contato", "ctt"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Arquivos de Contato (*.ctt)", "ctt"));
 
         int result = fileChooser.showSaveDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
