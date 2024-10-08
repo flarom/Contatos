@@ -40,7 +40,8 @@ public class dlgContactEditor extends javax.swing.JDialog {
         txtCategory = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Contato");
+        setTitle("Novo contato");
+        setIconImage((new javax.swing.ImageIcon(getClass().getResource("/person.png"))).getImage());
         setLocationByPlatform(true);
         setMaximumSize(new java.awt.Dimension(2147483647, 206));
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -49,8 +50,9 @@ public class dlgContactEditor extends javax.swing.JDialog {
             }
         });
 
-        btnOk.setText("OK");
+        btnOk.setText("Criar");
         btnOk.setToolTipText("Salvar alterações");
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
@@ -59,6 +61,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
 
         btnCancel.setText("Cancelar");
         btnCancel.setToolTipText("Fechar sem salvar");
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);
@@ -92,6 +95,8 @@ public class dlgContactEditor extends javax.swing.JDialog {
                 btnAddCategoryActionPerformed(evt);
             }
         });
+
+        txtCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -138,13 +143,11 @@ public class dlgContactEditor extends javax.swing.JDialog {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(txtCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(btnAddCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(txtCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAddCategory))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -162,7 +165,7 @@ public class dlgContactEditor extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCancel)
@@ -208,6 +211,8 @@ public class dlgContactEditor extends javax.swing.JDialog {
 
     public Contact CreateContact(String[] categories) {
         // create a new contact from scratch
+        btnOk.setText("Criar");
+        
         DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) txtCategory.getModel();
         model.removeAllElements();
 
@@ -233,6 +238,8 @@ public class dlgContactEditor extends javax.swing.JDialog {
 
     public Contact EditContact(Contact con, String[] categories) {
         // edit a contct
+        this.setTitle(con.getName());
+        btnOk.setText("Editar");
 
         txtName.setText(con.getName());
         txtTelephone.setText(con.getTelephone());

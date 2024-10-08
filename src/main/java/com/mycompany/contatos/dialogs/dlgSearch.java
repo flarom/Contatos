@@ -37,8 +37,9 @@ public class dlgSearch extends javax.swing.JDialog {
             }
         });
 
-        btnOk.setText("OK");
+        btnOk.setText("Pesquisar");
         btnOk.setToolTipText("Buscar pelos parâmetros selecionados");
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
@@ -51,6 +52,7 @@ public class dlgSearch extends javax.swing.JDialog {
 
         cbxColumn.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nome", "Telefone", "E-Mail", "Endereço", "Categoria" }));
         cbxColumn.setToolTipText("");
+        cbxColumn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         cbxColumn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbxColumnActionPerformed(evt);
@@ -93,7 +95,7 @@ public class dlgSearch extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(277, Short.MAX_VALUE)
+                .addContainerGap(269, Short.MAX_VALUE)
                 .addComponent(btnOk)
                 .addContainerGap())
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -101,8 +103,8 @@ public class dlgSearch extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnOk)
                 .addContainerGap())
         );

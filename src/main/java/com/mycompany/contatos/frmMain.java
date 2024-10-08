@@ -20,6 +20,8 @@ import javax.swing.UIManager;
  */
 public class frmMain extends javax.swing.JFrame {
 
+    private boolean isModified = false; // used to check if the current file is modified.
+
     public frmMain() {
         initComponents();
     }
@@ -62,7 +64,7 @@ public class frmMain extends javax.swing.JFrame {
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         mnuCopy = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        mnuAbout = new javax.swing.JMenuItem();
 
         mnuCopy2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/copy.png"))); // NOI18N
         mnuCopy2.setText("Copiar célula");
@@ -92,11 +94,16 @@ public class frmMain extends javax.swing.JFrame {
         });
         jPopupMenu1.add(mnuDelete2);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Meus Contatos");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setIconImage((new javax.swing.ImageIcon(getClass().getResource("/icone.png"))).getImage());
         setMinimumSize(new java.awt.Dimension(200, 200));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         tblContacts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -315,15 +322,15 @@ public class frmMain extends javax.swing.JFrame {
 
         jMenu3.setText("Ajuda");
 
-        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/about.png"))); // NOI18N
-        jMenuItem5.setText("Sobre");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+        mnuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        mnuAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/about.png"))); // NOI18N
+        mnuAbout.setText("Sobre");
+        mnuAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
+                mnuAboutActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem5);
+        jMenu3.add(mnuAbout);
 
         jMenuBar1.add(jMenu3);
 
@@ -391,6 +398,8 @@ public class frmMain extends javax.swing.JFrame {
                 con.getAddress(),
                 con.getCategory()
             };
+
+            isModified = true;
         }
     }
 
@@ -436,6 +445,8 @@ public class frmMain extends javax.swing.JFrame {
                 con.getAddress(),
                 con.getCategory()
             };
+
+            isModified = true;
         }
     }
 
@@ -471,6 +482,8 @@ public class frmMain extends javax.swing.JFrame {
             originalData = newData;
 
             model.removeRow(rowToRemove);
+
+            isModified = true;
         }
     }
 
@@ -572,6 +585,18 @@ public class frmMain extends javax.swing.JFrame {
     private void OpenFile() {
         // Open a .ctt file on tblContacts
 
+        if (isModified) {
+            int confirmation = JOptionPane.showConfirmDialog(null,
+                    "Você tem certeza de que deseja abrir arquivo?\nAlterações não salvas, no arquivo atual, serão perdidas.",
+                    "Abrir arquivo",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (confirmation != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        
         FileManager fileManager = new FileManager();
         String filePath = fileManager.OpenFileDialog();
 
@@ -596,6 +621,8 @@ public class frmMain extends javax.swing.JFrame {
                 File file = new File(filePath);
                 String fileName = file.getName();
                 ChangeTitle(fileName);
+
+                isModified = false;
             } else {
                 JOptionPane.showMessageDialog(null, "Erro ao ler o arquivo.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
@@ -603,6 +630,8 @@ public class frmMain extends javax.swing.JFrame {
     }
 
     private void SaveFile() {
+        restoreOriginalData();
+        
         if (filepath == null) {
             SaveFileAs();
             return;
@@ -619,9 +648,13 @@ public class frmMain extends javax.swing.JFrame {
 
         FileManager fileManager = new FileManager();
         fileManager.WriteCtt(filepath, content);
+
+        isModified = false;
     }
 
     private void SaveFileAs() {
+        restoreOriginalData();
+        
         FileManager fileManager = new FileManager();
         String filePath = fileManager.SaveFileDialog();
 
@@ -640,6 +673,8 @@ public class frmMain extends javax.swing.JFrame {
             filepath = filePath;
             ChangeTitle(new File(filepath).getName());
         }
+
+        isModified = false;
     }
 
     //
@@ -678,17 +713,17 @@ public class frmMain extends javax.swing.JFrame {
         Filter();
     }//GEN-LAST:event_mnuSearchActionPerformed
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+    private void mnuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAboutActionPerformed
         dlgAbout dlg = new dlgAbout(this, true);
         dlg.setVisible(true);
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }//GEN-LAST:event_mnuAboutActionPerformed
 
     private void mnuDelete2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuDelete2ActionPerformed
         DeleteItem();
     }//GEN-LAST:event_mnuDelete2ActionPerformed
 
     private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExitActionPerformed
-        System.exit(0);
+        safeExit();
     }//GEN-LAST:event_mnuExitActionPerformed
 
     private void mnuEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuEditActionPerformed
@@ -727,6 +762,10 @@ public class frmMain extends javax.swing.JFrame {
         copy();
     }//GEN-LAST:event_mnuCopy2ActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        safeExit();
+    }//GEN-LAST:event_formWindowClosing
+
     //
     // Other funcions
     //
@@ -754,12 +793,39 @@ public class frmMain extends javax.swing.JFrame {
     }
 
     private void newWindow() {
+        if (isModified) {
+            int confirmation = JOptionPane.showConfirmDialog(null,
+                    "Você tem certeza de que deseja criar um novo arquivo?\nAlterações não salvas serão perdidas.",
+                    "Criar novo arquivo",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (confirmation != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+
         this.dispose();
 
         frmMain newFrame = new frmMain();
         newFrame.setVisible(true);
     }
+    
+    private void safeExit() {
+        if (isModified) {
+            int confirmation = JOptionPane.showConfirmDialog(null,
+                    "Você tem certeza de que deseja sair?\nAlterações não salvas serão perdidas.",
+                    "Sair",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
 
+            if (confirmation != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        
+        System.exit(0); 
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -772,7 +838,6 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -783,6 +848,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JMenuItem mnuAbout;
     private javax.swing.JMenuItem mnuAdd;
     private javax.swing.JMenuItem mnuCopy;
     private javax.swing.JMenuItem mnuCopy2;
