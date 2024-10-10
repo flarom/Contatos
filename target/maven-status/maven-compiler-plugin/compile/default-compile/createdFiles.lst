@@ -1,4 +1,5 @@
 com\mycompany\contatos\dialogs\dlgAbout$1.class
+com\mycompany\contatos\frmMain$24.class
 com\mycompany\contatos\classes\SearchQuerry.class
 com\mycompany\contatos\frmMain$20.class
 com\mycompany\contatos\dialogs\dlgContactEditor$2.class
@@ -17,6 +18,7 @@ com\mycompany\contatos\dialogs\dlgContactEditor.class
 com\mycompany\contatos\frmMain$10.class
 com\mycompany\contatos\dialogs\dlgAbout$4.class
 com\mycompany\contatos\dialogs\dlgContactEditor$3.class
+com\mycompany\contatos\frmMain$25.class
 com\mycompany\contatos\frmMain$17.class
 com\mycompany\contatos\dialogs\dlgCategoryEditor.class
 com\mycompany\contatos\dialogs\dlgCategoryEditor$3.class
@@ -35,6 +37,7 @@ com\mycompany\contatos\dialogs\dlgAbout.class
 com\mycompany\contatos\frmMain$9.class
 com\mycompany\contatos\dialogs\dlgCategoryEditor$4.class
 com\mycompany\contatos\dialogs\dlgSearch$1.class
+com\mycompany\contatos\frmMain$26.class
 com\mycompany\contatos\dialogs\dlgSearch$3.class
 com\mycompany\contatos\dialogs\dlgContactEditor$1.class
 com\mycompany\contatos\frmMain$23.class

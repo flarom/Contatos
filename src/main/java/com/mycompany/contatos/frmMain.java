@@ -5,10 +5,12 @@ import com.mycompany.contatos.classes.Contact;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mycompany.contatos.classes.SearchQuerry;
 import com.mycompany.contatos.dialogs.*;
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JOptionPane;
@@ -53,6 +55,9 @@ public class frmMain extends javax.swing.JFrame {
         mnuOpen = new javax.swing.JMenuItem();
         mnuSave = new javax.swing.JMenuItem();
         mnuSaveAs = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JPopupMenu.Separator();
+        mnuReload = new javax.swing.JMenuItem();
+        mnuSeeFile = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         mnuExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
@@ -172,7 +177,7 @@ public class frmMain extends javax.swing.JFrame {
         jToolBar1.add(btnDelete);
 
         btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/edit.png"))); // NOI18N
-        btnEdit.setToolTipText("<html>\n<font size=\"4\">Editar (F2)</font><br>\nEditar os valores da seleção da lista de contatos\n</html>");
+        btnEdit.setToolTipText("<html>\n<font size=\"4\">Editar (Ctrl+E)</font><br>\nEditar os valores da seleção da lista de contatos\n</html>");
         btnEdit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEdit.setFocusable(false);
         btnEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -244,6 +249,24 @@ public class frmMain extends javax.swing.JFrame {
             }
         });
         jMenu1.add(mnuSaveAs);
+        jMenu1.add(jSeparator8);
+
+        mnuReload.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        mnuReload.setText("Recarregar");
+        mnuReload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuReloadActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuReload);
+
+        mnuSeeFile.setText("Ver arquivo");
+        mnuSeeFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuSeeFileActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuSeeFile);
         jMenu1.add(jSeparator1);
 
         mnuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
@@ -283,7 +306,7 @@ public class frmMain extends javax.swing.JFrame {
         });
         jMenu2.add(mnuDelete);
 
-        mnuEdit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+        mnuEdit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         mnuEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/edit.png"))); // NOI18N
         mnuEdit.setText("Editar");
         mnuEdit.setToolTipText("Editar os valores da seleção da lista de contatos");
@@ -359,6 +382,7 @@ public class frmMain extends javax.swing.JFrame {
     // Contact management
     //
     private void AddItem() {
+        restoreOriginalData();
         Set<String> uniqueCategories = new HashSet<>();
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblContacts.getModel();
         int rowCount = model.getRowCount();
@@ -412,6 +436,8 @@ public class frmMain extends javax.swing.JFrame {
             return;
         }
 
+        restoreOriginalData();
+
         Set<String> uniqueCategories = new HashSet<>();
         int rowCount = model.getRowCount();
         for (int i = 0; i < rowCount; i++) {
@@ -458,6 +484,8 @@ public class frmMain extends javax.swing.JFrame {
             return;
         }
 
+        restoreOriginalData();
+
         if (selectedRows.length > 1) {
             int confirmation = JOptionPane.showConfirmDialog(null,
                     "Você selecionou " + selectedRows.length + " itens. Deseja realmente deletá-los?",
@@ -473,7 +501,6 @@ public class frmMain extends javax.swing.JFrame {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblContacts.getModel();
 
         for (int i = selectedRows.length - 1; i >= 0; i--) {
-            // Remover da originalData
             int rowToRemove = selectedRows[i];
             String[][] newData = new String[originalData.length - 1][originalData[0].length];
 
@@ -587,7 +614,7 @@ public class frmMain extends javax.swing.JFrame {
 
         if (isModified) {
             int confirmation = JOptionPane.showConfirmDialog(null,
-                    "Você tem certeza de que deseja abrir arquivo?\nAlterações não salvas, no arquivo atual, serão perdidas.",
+                    "Você tem certeza de que deseja abrir o arquivo?\nAlterações não salvas, no arquivo atual, serão perdidas.",
                     "Abrir arquivo",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
@@ -596,7 +623,7 @@ public class frmMain extends javax.swing.JFrame {
                 return;
             }
         }
-        
+
         FileManager fileManager = new FileManager();
         String filePath = fileManager.OpenFileDialog();
 
@@ -617,7 +644,9 @@ public class frmMain extends javax.swing.JFrame {
 
                 tblContacts.setModel(model);
 
-                // update title
+                originalData = new String[content.length][content[0].length];
+                System.arraycopy(content, 0, originalData, 0, content.length);
+
                 File file = new File(filePath);
                 String fileName = file.getName();
                 ChangeTitle(fileName);
@@ -631,7 +660,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void SaveFile() {
         restoreOriginalData();
-        
+
         if (filepath == null) {
             SaveFileAs();
             return;
@@ -654,7 +683,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void SaveFileAs() {
         restoreOriginalData();
-        
+
         FileManager fileManager = new FileManager();
         String filePath = fileManager.SaveFileDialog();
 
@@ -677,6 +706,62 @@ public class frmMain extends javax.swing.JFrame {
         isModified = false;
     }
 
+    private void Reload() {
+        int confirmation = JOptionPane.showConfirmDialog(null,
+                "Você tem certeza de que deseja recarregar o arquivo?\nAlterações não salvas, no estado atual, serão perdidas.",
+                "Recarregar arquivo",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (confirmation != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        FileManager fileManager = new FileManager();
+
+        if (filepath != null) {
+            String[][] content = fileManager.ReadCtt(filepath);
+
+            if (content != null) {
+                String[] columnNames = {"Nome", "Telefone", "Email", "Endereço", "Categoria"};
+
+                javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(content, columnNames) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+
+                tblContacts.setModel(model);
+
+                File file = new File(filepath);
+                String fileName = file.getName();
+                ChangeTitle(fileName);
+
+                isModified = false;
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao ler o arquivo.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void SeeFile() {
+        if (filepath == null) return;
+
+        File file = new File(filepath);
+        if (file.exists()) {
+            File parentDir = file.getParentFile();
+            if (parentDir != null) {
+                try {
+                    Desktop.getDesktop().open(parentDir);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "O arquivo '" + filepath + "' existe na memoria, mas não em seu computador.\nSalve o arquivo antes.", "Arquivo não existe", JOptionPane.WARNING_MESSAGE);
+        }
+    }
     //
     // UI interaction
     //
@@ -766,6 +851,14 @@ public class frmMain extends javax.swing.JFrame {
         safeExit();
     }//GEN-LAST:event_formWindowClosing
 
+    private void mnuReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuReloadActionPerformed
+        Reload();
+    }//GEN-LAST:event_mnuReloadActionPerformed
+
+    private void mnuSeeFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSeeFileActionPerformed
+        SeeFile();
+    }//GEN-LAST:event_mnuSeeFileActionPerformed
+
     //
     // Other funcions
     //
@@ -799,7 +892,6 @@ public class frmMain extends javax.swing.JFrame {
                     "Criar novo arquivo",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
-
             if (confirmation != JOptionPane.YES_OPTION) {
                 return;
             }
@@ -810,7 +902,7 @@ public class frmMain extends javax.swing.JFrame {
         frmMain newFrame = new frmMain();
         newFrame.setVisible(true);
     }
-    
+
     private void safeExit() {
         if (isModified) {
             int confirmation = JOptionPane.showConfirmDialog(null,
@@ -823,8 +915,8 @@ public class frmMain extends javax.swing.JFrame {
                 return;
             }
         }
-        
-        System.exit(0); 
+
+        System.exit(0);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -847,6 +939,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem mnuAbout;
     private javax.swing.JMenuItem mnuAdd;
@@ -859,9 +952,11 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem mnuExit;
     private javax.swing.JMenuItem mnuNew;
     private javax.swing.JMenuItem mnuOpen;
+    private javax.swing.JMenuItem mnuReload;
     private javax.swing.JMenuItem mnuSave;
     private javax.swing.JMenuItem mnuSaveAs;
     private javax.swing.JMenuItem mnuSearch;
+    private javax.swing.JMenuItem mnuSeeFile;
     private javax.swing.JTable tblContacts;
     // End of variables declaration//GEN-END:variables
 }

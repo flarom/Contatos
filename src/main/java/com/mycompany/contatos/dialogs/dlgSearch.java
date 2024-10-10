@@ -48,7 +48,7 @@ public class dlgSearch extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setText("Pesquisar em");
+        jLabel1.setText("Pesquisar em:");
 
         cbxColumn.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nome", "Telefone", "E-Mail", "Endereço", "Categoria" }));
         cbxColumn.setToolTipText("");
@@ -59,7 +59,7 @@ public class dlgSearch extends javax.swing.JDialog {
             }
         });
 
-        jLabel2.setText("Valor");
+        jLabel2.setText("Buscar por:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -105,7 +105,7 @@ public class dlgSearch extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnOk)
+                .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
