@@ -252,6 +252,7 @@ public class frmMain extends javax.swing.JFrame {
         jMenu1.add(jSeparator8);
 
         mnuReload.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        mnuReload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/refresh.png"))); // NOI18N
         mnuReload.setText("Recarregar");
         mnuReload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -260,6 +261,7 @@ public class frmMain extends javax.swing.JFrame {
         });
         jMenu1.add(mnuReload);
 
+        mnuSeeFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/folderopen.png"))); // NOI18N
         mnuSeeFile.setText("Ver arquivo");
         mnuSeeFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
